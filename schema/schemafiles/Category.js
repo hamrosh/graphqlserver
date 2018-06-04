@@ -1,5 +1,6 @@
 import Category from '../../models/Category';
 import { gql } from 'apollo-server';
+
 // Type Defs
 
 export const typeDef = gql`
@@ -9,12 +10,17 @@ export const typeDef = gql`
     createdby: String
   }
 
+  type ReturnMessage {
+    message: String
+  }
+
   type Query {
     allCategories: [Category]
   }
 
   type Mutation {
     addCategory(input: CategoryInput): Category
+    delCategory(id: ID): ReturnMessage
   }
 
   input CategoryInput {
@@ -35,6 +41,22 @@ export const resolvers = {
       console.log(input);
       let q = new Category(input);
       return q.save();
+    },
+    delCategory: (root, { id }) => {
+      console.log(id);
+      var x = Category.findByIdAndRemove(id, (err, cat) => {
+        if (err) return false;
+        return true;
+      });
+      if (x) {
+        return {
+          message: 'Category Deleted Successfully'
+        };
+      } else {
+        return {
+          message: 'Category  Deletion PRoblem'
+        };
+      }
     }
   }
 };
