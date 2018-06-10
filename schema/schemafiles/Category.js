@@ -1,6 +1,6 @@
 import Category from '../../models/Category';
 import { gql } from 'apollo-server';
-
+import bcrypt from 'bcryptjs';
 // Type Defs
 
 export const typeDef = gql`
@@ -37,8 +37,7 @@ export const resolvers = {
     }
   },
   Mutation: {
-    addCategory: (root, { input }) => {
-      console.log(input);
+    addCategory: (root, { input }, context) => {
       let q = new Category(input);
       return q.save();
     },
